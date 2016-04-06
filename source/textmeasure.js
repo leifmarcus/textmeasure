@@ -1,3 +1,9 @@
+/**
+*   Text Measure
+*   Author: Leif Marcus
+*   version: 1.0
+*   Licenze: MIT
+*/
 (function(name, definition) {
     if (typeof define === 'function') {
         // define for AMD:
@@ -7,16 +13,16 @@
         module.exports = definition();
     } else {
         // using the module in the browser:
-        var theModule = definition(),
+        var curModule = definition(),
         global = this,
-        old = global[name];
-        theModule.noConflict = function() {
-            global[name] = old;
-            return theModule;
+        originalModule = global[name];
+        curModule.noConflict = function() {
+            global[name] = originalModule;
+            return curModule;
         };
-        global[name] = theModule;
+        global[name] = curModule;
     }
-})('textMeasure', function() {
+} ('textMeasure', function() {
 
     var ceil = Math.ceil;
 
@@ -36,10 +42,11 @@
             height: ceil(height),
         };
     };
-    var createElement = function(className, styles) {
+    var createElement = function(className, styles, html) {
         var el = document.createElement('div');
         el.className = className || '';
         el.style.cssText = styles || '';
+        if (html) { el.innerHTML = html; }
         return el;
     };
     var destroyElement = function(parent, child) {
@@ -53,18 +60,42 @@
 
 
     return {
+        /**
+        *   counts the words of a given string
+        *   @param {string} str - the string that should be analysed
+        *   @return {number} - word count
+        */
         wordsCount: function(str) {
             return this.words(str).length;
         },
+        /**
+        *   creates an array with all words
+        *   @param {string} str - the string that should be analysed
+        *   @return {array} - words in an array
+        */
         words: function(str) {
             return str.split(' ');
         },
-        longestWord: function(str, elementClass, containerClass, unit) {
+        /**
+        *   gets the Word with the longest Width
+        *   @param {string} str - the string that should be analysed
+        *   @param {string} elementClass - optional
+        *   @param {string} containerClass - optional
+        *   @return {object} - the word and the width of it.
+        */
+        longestWord: function(str, elementClass, containerClass) {
             var words = this.words(str);
             var savedWidth = 0;
             var savedIndex = 0;
             words.forEach(function(word, index) {
-                var width = this.getDimension(word,'auto', 'auto', elementClass, containerClass, unit).width;
+                var width = this.getDimension(
+                    word,
+                    'auto',
+                    'auto',
+                    elementClass,
+                    containerClass
+                ).width;
+
                 if (width > savedWidth) {
                     savedWidth = width;
                     savedIndex = index;
@@ -75,25 +106,34 @@
                 width: savedWidth
             };
         },
-        getDimension: function(html, maxWidth, maxHeight, elementClass, containerClass, unit) {
+        /**
+        *   gets a dimension of an element with text inside
+        *   by a given max dimension
+        *   @param {string} html - a string or html string
+        *   @param {integer/string} maxWidth - max width of the container
+        *   @param {integer/string} maxHeight - max height of the container
+        *   @param {string} elementClass - optional
+        *   @param {string} containerClass - optional
+        *   @return {object} - width and height of the text and text overflow
+        */
+        getDimension: function(html, maxWidth, maxHeight, elementClass, containerClass) {
             // base variables:
-            var useUnit     = unit || 'px';
             var returnObj = {};
 
             // the container to append the element on:
             var container = createElement(
                 containerClass,
                 baseStyles +
-                    'max-width:' + (isNaN(maxWidth) ? maxWidth : maxWidth + useUnit) + ';' +
-                    'max-height:' + (isNaN(maxHeight) ? maxHeight : maxHeight + useUnit) + ';'
+                    'max-width:' + (isNaN(maxWidth) ? maxWidth : maxWidth + 'px') + ';' +
+                    'max-height:' + (isNaN(maxHeight) ? maxHeight : maxHeight + 'px') + ';'
             );
 
             // the element to render text in:
             var element = createElement(
                 elementClass,
-                baseElementStyles
+                baseElementStyles,
+                html
             );
-            element.innerHTML = html;
 
             // append Elements to dom:
             container.appendChild(element);
@@ -111,4 +151,4 @@
             return returnObj;
         }
     };
-});
+}));
