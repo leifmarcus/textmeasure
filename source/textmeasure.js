@@ -31,7 +31,7 @@
     /**
     *   adds calculated style values together
     *   @param {object} compStyles - a CSSStyleDeclaration Object
-    *   @param {arr} arr - a list of css properties to go through
+    *   @param {array} arr - a list of css properties to go through
     *   @return {number} - returns the sum of all property values.
     */
     var addValues = function(compStyles, arr) {
@@ -99,8 +99,8 @@
         /**
         *   gets the Word with the longest Width
         *   @param {string} str - the string that should be analysed
-        *   @param {string} elementClass - optional
-        *   @param {string} containerClass - optional
+        *   @param {string} [elementClass] - optional
+        *   @param {string} [containerClass] - optional
         *   @return {object} - the word and the width of it.
         */
         longestWord: function(str, elementClass, containerClass) {
@@ -130,10 +130,10 @@
         *   gets a dimension of an element with text inside
         *   by a given max dimension
         *   @param {string} html - a string or html string
-        *   @param {integer/string} maxWidth - max width of the container
+        *   @param {(number|string)} maxWidth - max width of the container
         *   @param {integer/string} maxHeight - max height of the container
-        *   @param {string} elementClass - optional
-        *   @param {string} containerClass - optional
+        *   @param {string} [elementClass] - class for the element
+        *   @param {string} [containerClass] - class for the container
         *   @return {object} - width and height of the text and text overflow
         */
         getDimension: function(html, maxWidth, maxHeight, elementClass, containerClass) {
