@@ -25,23 +25,43 @@
 } ('textMeasure', function() {
 
     var ceil = Math.ceil;
+    var checkWidth = ['width', 'margin-left', 'margin-right', 'padding-left', 'padding-right'];
+    var checkHeight = ['height', 'margin-top', 'margin-bottom', 'padding-top', 'padding-bottom'];
 
+    /**
+    *   adds calculated style values together
+    *   @param {object} compStyles - a CSSStyleDeclaration Object
+    *   @param {arr} arr - a list of css properties to go through
+    *   @return {number} - returns the sum of all property values.
+    */
+    var addValues = function(compStyles, arr) {
+        return arr.reduce(function(prev, curr) {
+            return prev + parseFloat(compStyles.getPropertyValue(curr));
+        }, 0);
+    };
+    /**
+    *   measures the dimension of a dom element
+    *   @param {object} node - the html element object (DOMNode)
+    *   @return {object} - calculated width and height of the node
+    */
     var measureElementDimension = function(node) {
         var compStyles = window.getComputedStyle(node, null);
 
-        var width = parseFloat(compStyles.getPropertyValue('width'));
-        width += parseFloat(compStyles.getPropertyValue('margin-left'));
-        width += parseFloat(compStyles.getPropertyValue('margin-right'));
-
-        var height = parseFloat(compStyles.getPropertyValue('height'));
-        height += parseFloat(compStyles.getPropertyValue('margin-top'));
-        height += parseFloat(compStyles.getPropertyValue('margin-bottom'));
+        var width = addValues(compStyles, checkWidth);
+        var height = addValues(compStyles, checkHeight);
 
         return {
             width: ceil(width),
             height: ceil(height),
         };
     };
+    /**
+    *   creates a dom node
+    *   @param {string} className - a classname to append to the element
+    *   @param {string} styles - style rules for the style attribute
+    *   @param {string} html - some html to append to the element
+    *   @return {object} - calculated width and height of the node
+    */
     var createElement = function(className, styles, html) {
         var el = document.createElement('div');
         el.className = className || '';
@@ -118,7 +138,6 @@
         */
         getDimension: function(html, maxWidth, maxHeight, elementClass, containerClass) {
             // base variables:
-            var returnObj = {};
 
             // the container to append the element on:
             var container = createElement(
@@ -140,15 +159,16 @@
             rootEl.appendChild(container);
 
             var compStyles = measureElementDimension(element);
-            returnObj.width = compStyles.width;
-            returnObj.height = compStyles.height;
-
-            returnObj.overflow = returnObj.height > maxHeight || returnObj.width > maxWidth;
 
             // remove child from measure element.
             destroyElement(rootEl, container);
 
-            return returnObj;
+            return {
+                width: compStyles.width,
+                height: compStyles.height,
+                overflow: compStyles.height > maxHeight ||
+                          compStyles.width > maxWidth
+            };
         }
     };
 }));
