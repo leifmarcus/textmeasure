@@ -32,7 +32,7 @@
     *   adds calculated style values together
     *   @param {object} compStyles - a CSSStyleDeclaration Object
     *   @param {array} arr - a list of css properties to go through
-    *   @return {number} - returns the sum of all property values.
+    *   @returns {number} returns the sum of all property values.
     */
     var addValues = function(compStyles, arr) {
         return arr.reduce(function(prev, curr) {
@@ -42,7 +42,7 @@
     /**
     *   measures the dimension of a dom element
     *   @param {object} node - the html element object (DOMNode)
-    *   @return {object} - calculated width and height of the node
+    *   @returns {object} calculated width and height of the node
     */
     var measureElementDimension = function(node) {
         var compStyles = window.getComputedStyle(node, null);
@@ -60,7 +60,7 @@
     *   @param {string} className - a classname to append to the element
     *   @param {string} styles - style rules for the style attribute
     *   @param {string} html - some html to append to the element
-    *   @return {object} - calculated width and height of the node
+    *   @returns {object} calculated width and height of the node
     */
     var createElement = function(className, styles, html) {
         var el = document.createElement('div');
@@ -83,7 +83,7 @@
         /**
         *   counts the words of a given string
         *   @param {string} str - the string that should be analysed
-        *   @return {number} - word count
+        *   @returns {number} word count
         */
         wordsCount: function(str) {
             return this.words(str).length;
@@ -91,7 +91,7 @@
         /**
         *   creates an array with all words
         *   @param {string} str - the string that should be analysed
-        *   @return {array} - words in an array
+        *   @returns {array} words in an array
         */
         words: function(str) {
             return str.split(' ');
@@ -101,7 +101,7 @@
         *   @param {string} str - the string that should be analysed
         *   @param {string} [elementClass] - optional
         *   @param {string} [containerClass] - optional
-        *   @return {object} - the word and the width of it.
+        *   @returns {object} the word and the width of it.
         */
         longestWord: function(str, elementClass, containerClass) {
             var words = this.words(str);
@@ -130,11 +130,11 @@
         *   gets a dimension of an element with text inside
         *   by a given max dimension
         *   @param {string} html - a string or html string
-        *   @param {(number|string)} maxWidth - max width of the container
-        *   @param {integer/string} maxHeight - max height of the container
+        *   @param {number|string} maxWidth - max width of the container
+        *   @param {number|string} maxHeight - max height of the container
         *   @param {string} [elementClass] - class for the element
         *   @param {string} [containerClass] - class for the container
-        *   @return {object} - width and height of the text and text overflow
+        *   @returns {object} width and height of the text and text overflow
         */
         getDimension: function(html, maxWidth, maxHeight, elementClass, containerClass) {
             // base variables:
