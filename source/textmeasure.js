@@ -18,54 +18,96 @@
     }
 })('textMeasure', function() {
 
-    var exception = function(message) {
-        return 'Module textMeasure:' + message;
+    var ceil = Math.ceil;
+
+    var measureElementDimension = function(node) {
+        var compStyles = window.getComputedStyle(node, null);
+
+        var width = parseFloat(compStyles.getPropertyValue('width'));
+        width += parseFloat(compStyles.getPropertyValue('margin-left'));
+        width += parseFloat(compStyles.getPropertyValue('margin-right'));
+
+        var height = parseFloat(compStyles.getPropertyValue('height'));
+        height += parseFloat(compStyles.getPropertyValue('margin-top'));
+        height += parseFloat(compStyles.getPropertyValue('margin-bottom'));
+
+        return {
+            width: ceil(width),
+            height: ceil(height),
+        };
     };
+    var createElement = function(className, styles) {
+        var el = document.createElement('div');
+        el.className = className || '';
+        el.style.cssText = styles || '';
+        return el;
+    };
+    var destroyElement = function(parent, child) {
+        parent.removeChild(child);
+    };
+
     var rootEl = document.getElementsByTagName('body')[0];
     var baseStyles = 'position:absolute !important;top:-9999px !important;' +
-                     'left:-9999px !important;visibility:hidden; !important';
+                     'left:-9999px !important;visibility:hidden; !important;';
     var baseElementStyles = 'display:inline-block !important;';
 
-    return {
-        fitDimension: function(string, maxWidth, maxHeight, elementClass, containerClass, unit) {
-            if (isNaN(maxWidth) || isNaN(maxHeight)) {
-                throw exception("Please add maxWidth and maxHeight to make this work");
-            }
-            var t0 = performance.now();
 
+    return {
+        wordsCount: function(str) {
+            return this.words(str).length;
+        },
+        words: function(str) {
+            return str.split(' ');
+        },
+        longestWord: function(str, elementClass, containerClass, unit) {
+            var words = this.words(str);
+            var savedWidth = 0;
+            var savedIndex = 0;
+            words.forEach(function(word, index) {
+                var width = this.getDimension(word,'auto', 'auto', elementClass, containerClass, unit).width;
+                if (width > savedWidth) {
+                    savedWidth = width;
+                    savedIndex = index;
+                }
+            }, this);
+            return {
+                word: words[savedIndex],
+                width: savedWidth
+            };
+        },
+        getDimension: function(html, maxWidth, maxHeight, elementClass, containerClass, unit) {
             // base variables:
             var useUnit     = unit || 'px';
-            var returnObj = { fit: true };
+            var returnObj = {};
 
             // the container to append the element on:
-            var container = document.createElement('div');
-            container.className = containerClass || '';
-            container.style.cssText = baseStyles + 'max-width:' + maxWidth + 'px;' +
-                    'max-height:' + maxHeight + 'px';
+            var container = createElement(
+                containerClass,
+                baseStyles +
+                    'max-width:' + (isNaN(maxWidth) ? maxWidth : maxWidth + useUnit) + ';' +
+                    'max-height:' + (isNaN(maxHeight) ? maxHeight : maxHeight + useUnit) + ';'
+            );
 
             // the element to render text in:
-            var element = document.createElement('div');
-            element.style.cssText = baseElementStyles;
-            element.className = elementClass || '';
-            element.innerHTML = string;
+            var element = createElement(
+                elementClass,
+                baseElementStyles
+            );
+            element.innerHTML = html;
 
             // append Elements to dom:
             container.appendChild(element);
             rootEl.appendChild(container);
 
-            var compStyles = window.getComputedStyle(element, null);
-            returnObj.width = Math.round(parseFloat(compStyles.width) +
-                              parseFloat(compStyles['margin-left']) +
-                              parseFloat(compStyles['margin-right']) );
-            returnObj.height = Math.round(parseFloat(compStyles.height) +
-                              parseFloat(compStyles['margin-top']) +
-                              parseFloat(compStyles['margin-bottom']) );
+            var compStyles = measureElementDimension(element);
+            returnObj.width = compStyles.width;
+            returnObj.height = compStyles.height;
+
+            returnObj.overflow = returnObj.height > maxHeight || returnObj.width > maxWidth;
 
             // remove child from measure element.
-            rootEl.removeChild(container);
+            destroyElement(rootEl, container);
 
-            var t1 = performance.now();
-            console.log("string.fitDimension takes", (t1 - t0), "ms");
             return returnObj;
         }
     };
