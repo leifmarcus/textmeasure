@@ -18,13 +18,9 @@
         line-height: 20px;
         padding-bottom: 10px;
     }
-    .element:first-line {
-        font-size: 20px;
-        line-height: 24px;
-        font-weight: bold;
-    }
     .different {
-        letter-spacing: 0.5em;
+        font-weight: bold;
+        text-transform: uppercase;
     }
     </style>
 </head>
@@ -40,8 +36,12 @@
     (function(d){
         var html = document.querySelector('.element').innerHTML;
         var string = document.querySelector('.element').textContent;
-        var dim = textMeasure.getDimension(html, 500, 280, 'element', 'container');
+        var getDimension = textMeasure.getDimension;
         var t0 = performance.now();
+        var dim = getDimension(html, 500, 280, 'element', 'container');
+        var t1 = performance.now();
+        console.log("getDimension took", (t1 - t0), "milliseconds");
+
         var longestWord = textMeasure.longestWord(string.trim(), 'element', 'container');
 
 
@@ -49,6 +49,8 @@
         var html = '<div>width: ' + dim.width + '</div>';;
         html += '<div>height: ' + dim.height + '</div>';
         html += '<div>overflow: ' + dim.overflow + '</div>';
+        html += '<div>milliseconds: ' + (t1 - t0) + 'ms</div>';
+        html += '<div>&nbsp;</div>';
         html += '<div>longest word: ' + longestWord.word + '</div>';
         html += '<div>Word Width: ' + longestWord.width + '</div>';
         output.innerHTML = html;

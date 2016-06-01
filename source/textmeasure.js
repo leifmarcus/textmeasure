@@ -35,9 +35,11 @@
     *   @returns {number} returns the sum of all property values.
     */
     var addValues = function(compStyles, arr) {
-        return arr.reduce(function(prev, curr) {
-            return prev + parseFloat(compStyles.getPropertyValue(curr));
-        }, 0);
+        var curr = 0;
+        for (var i = arr.length - 1; i >= 0; i--) {
+            curr += parseFloat(compStyles.getPropertyValue(arr[i]));
+        }
+        return curr;
     };
     /**
     *   measures the dimension of a dom element
@@ -45,8 +47,7 @@
     *   @returns {object} calculated width and height of the node
     */
     var measureElementDimension = function(node) {
-        var compStyles = window.getComputedStyle(node, null);
-
+        var compStyles = getComputedStyle(node, null);
         var width = addValues(compStyles, checkWidth);
         var height = addValues(compStyles, checkHeight);
 
