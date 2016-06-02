@@ -100,8 +100,8 @@
         /**
         *   gets the Word with the longest Width
         *   @param {string} str - the string that should be analysed
-        *   @param {string} [elementClass] - optional
-        *   @param {string} [containerClass] - optional
+        *   @param {string} elementClass - optional
+        *   @param {string} containerClass - optional
         *   @returns {object} the word and the width of it.
         */
         longestWord: function(str, elementClass, containerClass) {
