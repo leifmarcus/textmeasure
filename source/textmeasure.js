@@ -24,7 +24,10 @@
     }
 } ('textMeasure', function() {
 
+    // localize globals:
     var ceil = Math.ceil;
+
+    // array with style properties to add together
     var checkWidth = ['width', 'margin-left', 'margin-right', 'padding-left', 'padding-right'];
     var checkHeight = ['height', 'margin-top', 'margin-bottom', 'padding-top', 'padding-bottom'];
 
