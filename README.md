@@ -38,9 +38,9 @@ Calculates the width and height of a given HTML. Some textboxes might have diffe
 ```Javascript
 var textMeasure = require('textMeasure');
 textMeasure.getDimension(
-	'<p>this is a <b>paragraph</b></p>, 
-	300, 200, 
-	'element-class', 
+	'<p>this is a <b>paragraph</b></p>',
+	300, 200,
+	'element-class',
 	'container-class'
 );
 
